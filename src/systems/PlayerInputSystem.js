@@ -1,186 +1,68 @@
+import Phaser from "phaser"
 import {
   defineQuery,
-  enterQuery,
-  hasComponent 
+  hasComponent
 } from "bitecs"
 
-import Phaser from "phaser"
-
-//components
-
+//Components
 import { Player } from "../components/Player" 
+import { Movement } from "../components/Movement" 
 
-//helpers
-import { EventCenter } from "../helpers/EventCenter" 
+//Helpers
+import { EventCenter } from "../helpers/EventCenter"
 
 
-export const createControlsSystem=(world)=>{
+
+export const createPlayerInputSystem=(
+  world
+)=>{
   
+  const cursorVector=new Phaser.Math.Vector2(0,0)
   
-  const playerQuery=defineQuery([Player])
-  
-  let controls={
+  const movementCursors={
     up:false,
     down:false,
     left:false,
     right:false
   }
   
-  let gamepad={
-    up:false,
-    down:false,
-    left:false,
-    right:false
+  const movementAxis={
+    x:0,
+    y:0
   }
-
-  EventCenter.on("setMovementCursors",joystickCursors=>{
-    Object.keys(joystickCursors).forEach(cursorKey=>{
-      controls[cursorKey]=joystickCursors[cursorKey]
-    })
-  })
-
+  
   EventCenter.on("setMovementCursor",({cursor,value})=>{
-    controls[cursor]=value
+    movementCursors[cursor]=value
   })
   
-  EventCenter.on("setMovementSpeed",val=>{
-    speed=val
+  EventCenter.on("setMovementAxis",data=>{
+    movementAxis.x=data.x
+    movementAxis.y=data.y
   })
-
   
-  EventCenter.on("updateGamepad",(pad)=>{
-    gamepad=pad
+  
+  
+  const playerQuery=defineQuery([Player,Movement])
+  
+  
+  return world=>{
     
-  })
-  
-  return (world)=>{
-    if (world.store.rotating)
-      return world
-      
-    const cursors={
-      up:controls.up||gamepad.up,
-      down:controls.down||gamepad.down,
-      left:controls.left||gamepad.left,
-      right:controls.right||gamepad.right,
+    if (movementCursors.up || movementCursors.down) {
+      movementAxis.y=0
+        - (movementCursors.up?1:0)
+        + (movementCursors.down?1:0)
     }
-    shellQuery(world).forEach(id=>{
-      if (cursors.up) {
-        if (Shell.state[id]<1)
-          EventCenter.emit("startShellRotation",world.sprites[id])
-        if (Shell.state[id]!==1)
-          EventCenter.emit("playAudio",{key:"spin"})
-        Shell.state[id]=1
-      }
-        
-      else if (cursors.down) {
-        if (Shell.state[id]<1)
-          EventCenter.emit("startShellRotation", world.sprites[id])
-        if (Shell.state[id]!==2)
-          EventCenter.emit("playAudio",{key:"spin"})
-        Shell.state[id]=2
-      }
-        
-      else {
-        if (Shell.state[id]>0) {
-          EventCenter.emit("playAudio",{key:"stopSpin"})
-          EventCenter.emit("stopShellRotation")
-        }
-          
-        Shell.state[id]=0
-      }
-        
-    })
+    if (movementCursors.left || movementCursors.right) {
+      movementAxis.x=0
+        - (movementCursors.left?1:0)
+        + (movementCursors.right?1:0)
+    }
     
     playerQuery(world).forEach(id=>{
-      let moveDir=0
-      if (cursors.left)
-        moveDir--
-      if (cursors.right)
-        moveDir++
-        
-      const sprite=world.sprites[id]
-      if (!sprite) 
-        return
-        
-      
-        
-        
-      
-      if (moveDir!==0)
-        sprite.flipX=moveDir<0
-      
-      if (world.store.rotation>0&&world.store.rotation<3)
-        moveDir*=-1
-      
-      if (world.store.rotation%2>0)
-        sprite.setVelocityY(moveDir*speed)
-      else 
-        sprite.setVelocityX(moveDir*speed)
-      
-      
-      if (moveDir===0) {
-        sprite.play("idle",true)
-        EventCenter.emit("stopMoving",sprite)
-      }
-        
-      else   {
-        sprite.play("walk",true)
-        EventCenter.emit("startMoving",sprite)
-      }/*
-        if (cursors.up||cursors.down)
-          sprite.play("gravity-walk",true)
-        else */
-          
-      
-      
-      
-      if (
-        cursors.up 
-        &&!sprite.flipX
-        &&(cursors.right||rotWithoutDir)
-        && Trigger.triggered[Player.triggerR[id]]===1
-      ) {
-        EventCenter.emit("rotateWorld",1)
-      } else if (
-        cursors.up 
-        &&sprite.flipX
-        &&(cursors.left||rotWithoutDir)
-        && Trigger.triggered[Player.triggerL[id]]===1
-      ) {
-        EventCenter.emit("rotateWorld",-1)
-      } else if (
-        cursors.down 
-        &&!sprite.flipX
-        &&(cursors.right||rotWithoutDir)
-        && (
-          Trigger.triggered[Player.triggerBR[id]]<1
-          &&Trigger.triggered[Player.triggerBL[id]]===1
-        )
-      ) {
-        EventCenter.emit("rotateWorldDown",1)
-      }
-      else if (
-        cursors.up 
-        &&sprite.flipX
-        &&(cursors.left||rotWithoutDir)
-        && Trigger.triggered[Player.triggerL[id]]===1
-      ) {
-        EventCenter.emit("rotateWorld",-1)
-      } else if (
-        cursors.down 
-        &&sprite.flipX
-        &&(cursors.left||rotWithoutDir)
-        && (
-          Trigger.triggered[Player.triggerBL[id]]<1
-          &&Trigger.triggered[Player.triggerBR[id]]===1
-        )
-      ) {
-        EventCenter.emit("rotateWorldDown",-1)
-      }
-      
+      Movement.x[id]=movementAxis.x
+      Movement.y[id]=movementAxis.y
     })
     
-    return world
+    return world;
   }
-  
 }

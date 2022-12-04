@@ -4,6 +4,7 @@ import Phaser from "phaser"
 //Helpers
 import { EventCenter } from "../helpers/EventCenter" 
 import { GlobalStuff } from "../helpers/GlobalStuff" 
+import { Controls } from "../helpers/Controls" 
 
 //Data
 import { Palette } from "../data/Palette" 
@@ -24,6 +25,7 @@ export default class UI extends Phaser.Scene {
   create({}) {
     
     this.setupJoystick()
+    this.controls=new Controls(this)
   }
   
   setupJoystick() {

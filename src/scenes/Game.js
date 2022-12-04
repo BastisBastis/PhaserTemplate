@@ -13,7 +13,8 @@ import { SystemManager } from "../helpers/SystemManager"
 import { EventCenter } from "../helpers/EventCenter" 
 import { GlobalStuff } from "../helpers/GlobalStuff" 
 import { MusicManager } from "../helpers/MusicManager" 
-import { SFXManager } from "../helpers/sfxManager" 
+import { SFXManager } from "../helpers/sfxManager"
+
 
 //Data
 import { Palette } from "../data/Palette" 

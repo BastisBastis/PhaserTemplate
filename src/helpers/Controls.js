@@ -15,7 +15,7 @@ export class Controls {
   
   setupTouch() {
     EventCenter.on("joystickUpdate",(data)=>{
-      EventCenter.emit("setMovementCursors",data)
+      EventCenter.emit("setMovementAxis",data)
     })
   }
   

@@ -9,6 +9,8 @@ import { Position2d } from "../components/Position2d"
 import { Size2d } from "../components/Size2d" 
 import { PhysicsBody } from "../components/PhysicsBody" 
 import { Color } from "../components/Color" 
+import { Movement } from "../components/Movement"
+import { Player } from "../components/Player" 
 
 //Data
 import { ShapeTypes } from "../data/ShapeTypes"
@@ -19,11 +21,13 @@ export const createPlayer=(world)=>{
   
   
   const id= addEntity(world)
-  addComponent(world,Position2d,id)
-  addComponent(world,Size2d,id)
-  addComponent(world,Color,id)
-  addComponent(world,Shape,id)
-  addComponent(world,PhysicsBody,id)
+  addComponent(world, Position2d, id)
+  addComponent(world, Size2d, id)
+  addComponent(world, Color, id)
+  addComponent(world, Shape, id)
+  addComponent(world, PhysicsBody, id)
+  addComponent(world, Player, id)
+  addComponent(world, Movement, id)
   
   Position2d.x[id]=100
   Position2d.y[id]=540
@@ -36,5 +40,9 @@ export const createPlayer=(world)=>{
   Shape.type[id]=ShapeTypes.rectangle
   
   PhysicsBody.collisionGroup[id]=CollisionGroupKeys.player
+  
+  Movement.x[id]=0
+  Movement.y[id]=0
+  Movement.speed[id]=5
   
 }
