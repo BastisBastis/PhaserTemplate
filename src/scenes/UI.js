@@ -23,14 +23,20 @@ export default class UI extends Phaser.Scene {
   }
   
   create({}) {
+    try { 
     
     this.setupJoystick()
     this.controls=new Controls(this)
+    
+    } catch (er) {console.log(er.message,er.stack); throw er} 
   }
   
   setupJoystick() {
     this.joystick = new Joystick({
       scene:this,
+      touchArea:(x,y)=>{
+        return x>this.cameras.main.centerX
+      },
       onChange:(data)=>{
         EventCenter.emit("joystickUpdate", data)
       }

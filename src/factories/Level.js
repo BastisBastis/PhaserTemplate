@@ -21,6 +21,8 @@ export const createLevel=(world)=>{
     height:64
   }
   for (let i=0;i<100;i++) {
+    if (i%16>10)
+      i+=4
     const id= addEntity(world)
     addComponent(world,Position2d,id)
     addComponent(world,Size2d,id)
@@ -40,4 +42,10 @@ export const createLevel=(world)=>{
     
   PhysicsBody.collisionGroup[id]=CollisionGroupKeys.ground
   }
+  
+  world.scene.cameras.main.setBounds(
+    0,0,
+    100*tileSize.width,
+    world.scene.cameras.main.height
+  )
 }

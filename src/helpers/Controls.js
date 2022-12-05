@@ -5,6 +5,7 @@ export class Controls {
   
   constructor(scene) {
     this.scene=scene;
+    scene.input.addPointer(1)
     this.enabled=true
     
     this.setupKeyboardControls()
@@ -16,6 +17,20 @@ export class Controls {
   setupTouch() {
     EventCenter.on("joystickUpdate",(data)=>{
       EventCenter.emit("setMovementAxis",data)
+    })
+    let jumpPointer=null
+    this.scene.input.on("pointerdown",(p)=>{
+      if (p.x<this.scene.cameras.main.centerX) {
+        jumpPointer=p.id
+        EventCenter.emit("requestJump")
+      }
+    })
+    
+    this.scene.input.on("pointerup",(p)=>{
+      if (p.id===jumpPointer) {
+        this.jumpPointer=null
+        EventCenter.emit("stopRequestingJump")
+      }
     })
   }
   

@@ -11,6 +11,7 @@ import { PhysicsBody } from "../components/PhysicsBody"
 import { Color } from "../components/Color" 
 import { Movement } from "../components/Movement"
 import { Player } from "../components/Player" 
+import { Jump } from "../components/Jump" 
 
 //Data
 import { ShapeTypes } from "../data/ShapeTypes"
@@ -28,6 +29,7 @@ export const createPlayer=(world)=>{
   addComponent(world, PhysicsBody, id)
   addComponent(world, Player, id)
   addComponent(world, Movement, id)
+  addComponent(world, Jump, id)
   
   Position2d.x[id]=100
   Position2d.y[id]=540
@@ -44,5 +46,13 @@ export const createPlayer=(world)=>{
   Movement.x[id]=0
   Movement.y[id]=0
   Movement.speed[id]=5
+  
+  Jump.bufferTimer[id]=-1
+  Jump.coyoteTimer[id]=-1
+  Jump.jumpVelocity[id]=-1000
+  Jump.maxJumpTime[id]=300
+  Jump.currentJumpTimer[id]=-1
+  Jump.fallingGravityMod[id]=2
+  Jump.holdingJump[id]=0
   
 }

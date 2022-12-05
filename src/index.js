@@ -16,7 +16,7 @@ const config = {
     transparent:false,
     parent:"phaserContainer",
     fps: {
-      limit: 60
+      //limit: 60
     },
     scale: {
       mode: Phaser.Scale.FIT,
@@ -31,7 +31,7 @@ const config = {
       default: "arcade",
       arcade:{
         gravity:{
-          y:800
+          y:1200
         },
         debug:true
       }
