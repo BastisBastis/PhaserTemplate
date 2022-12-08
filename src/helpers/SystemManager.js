@@ -5,6 +5,7 @@ import { createPlayerInputSystem } from "../systems/PlayerInputSystem"
 import { createMovementSystem } from "../systems/MovementSystem" 
 import { createJumpSystem } from "../systems/JumpSystem" 
 import { createCameraSystem } from "../systems/CameraSystem" 
+import { createAnimationSystem } from "../systems/AnimationSystem" 
 
 export class SystemManager {
   constructor(world) {
@@ -18,6 +19,7 @@ export class SystemManager {
       createPhysicsBodySystem(world),
       createPositionSystem(world),
       createCameraSystem(world),
+      createAnimationSystem(world),
     ]
   }
   
